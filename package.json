@@ -1,8 +1,7 @@
 {
-    "name": "Vox Magica Application",
+    "name": "vox-magica-application",
     "version": "0.0.1",
-    "private": true,
-    "devDependencies": {},
+    "private": false,
     "scripts": {
         "start": "node app.js"
     },
