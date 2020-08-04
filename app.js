@@ -2,14 +2,16 @@ var Express = require("express"),
     BodyParser = require("body-parser"),
     Request = require("request"),
     fs = require('fs'),
+    properties = require('java-properties'),
     app = Express(),
     html = fs.readFileSync('index.html'),
-    port = process.env.PORT || 3000;
+    port = process.env.PORT || 3000,
+    values = properties.of('app.properties');
 
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
 
-const RECAPTCHA_SECRET = "RECAPTCHA_SECRET";
+var RECAPTCHA_SECRET = values.get('RECAPTCHA_SECRET');
 
 app.post("/download", function(request, response) {
     var recaptcha_url = "https://www.google.com/recaptcha/api/siteverify?";
