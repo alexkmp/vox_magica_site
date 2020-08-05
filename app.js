@@ -16,9 +16,11 @@ var RECAPTCHA_SECRET = values.get('RECAPTCHA_SECRET');
 var url = values.get('mongodb.url');
 
 var MongoClient = mongo.MongoClient;
-var jsonResult = { "count": 0 };
+var jsonResult = { "result": "Success" };
 
-app.post("/download", function(request, response) {
+app.post("/increment", function(request, response) {
+    console.log('fileType ' + request.body.fileType);
+    var fileType = request.body.fileType;
     var recaptcha_url = "https://www.google.com/recaptcha/api/siteverify?";
     recaptcha_url += "secret=" + RECAPTCHA_SECRET + "&";
     recaptcha_url += "response=" + request.body["g-recaptcha-response"] + "&";
@@ -28,10 +30,7 @@ app.post("/download", function(request, response) {
         if (body.success !== undefined && !body.success) {
             return response.send({ "message": "Captcha validation failed" });
         }
-        increment().then(result => {
-            console.log('jsonResult.count: ' + result);
-            jsonResult.count = result;
-        });
+        increment(fileType);
         response.header("Content-Type", "application/json").send(jsonResult);
     });
 });
@@ -42,20 +41,26 @@ app.get("/", function(request, response) {
     response.end();
 });
 
-async function increment() {
+/**
+ * Функция инкремента, увеличивает значение счетчика для типа файла переданного в параметрах
+ * Пишет в базу
+ * @param тип файла
+ * @returns новое значение счетчика
+ */
+async function increment(fileType) {
     let client, db, cnt;
     try {
         client = await MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
         db = client.db("mydb");
         let dCollection = db.collection('counts');
-        let result = await dCollection.findOne();
+        let result = await dCollection.findOne({ type: fileType });
         console.log(result);
         if (result == null) {
-            cnt = 0;
-            result = await dCollection.insertOne({ count: 0 });
+            cnt = 1;
+            result = await dCollection.insertOne({ type: fileType, count: 1 });
         } else {
             cnt = result.count + 1;
-            result = await dCollection.updateOne({}, { $set: { "count": cnt } });
+            result = await dCollection.updateOne({ type: fileType }, { $set: { "count": cnt } });
         }
         console.log('count ' + cnt);
         return cnt;

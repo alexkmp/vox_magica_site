@@ -13,9 +13,15 @@
         <p>Тут будет красивая картинка, разные страницы и все такое что надо скачать</p>
     </div>
     <div>
-        <form method="post" action="/download">
-            <div class="g-recaptcha" data-sitekey="6LfM7bkZAAAAAKn0HuY5mQGCpItIfi3Lk2uWdJPH"></div>
+        <form method="post" action="/increment">
+            <select name='fileType' id='fileType'>
+                <option value="fb2">fb2</option>
+                <option value="pdf">pdf</option>
+                <option value="epub">epub</option>
+                <option value="docx">docx</option>
+            </select>
             <button type="submit">Download</button>
+            <div class="g-recaptcha" data-sitekey="6LfM7bkZAAAAAKn0HuY5mQGCpItIfi3Lk2uWdJPH"></div>
         </form>
     </div>
 </body>
