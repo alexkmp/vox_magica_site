@@ -1,4 +1,7 @@
+/client/node_modules
 /node_modules
+/client/yarn.lock
+yarn.lock
 package-lock.json
-app.properties
+config.env
 *.zip

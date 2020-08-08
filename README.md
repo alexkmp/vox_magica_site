@@ -1,3 +1,3 @@
-# vox_magica_site
-Сайт
-Технологии: Node.js, Express.js, MongoDB, Amazon Elastic Beanstalk
+client: yarn install
+site_viz: yarn install
+site_viz: npm run dev
