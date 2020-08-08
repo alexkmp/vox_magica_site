@@ -1,3 +1,2 @@
-client: yarn install
-site_viz: yarn install
-site_viz: npm run dev
+Сборка и запуск
+cd client/ && yarn install && cd .. && yarn install && npm run dev
