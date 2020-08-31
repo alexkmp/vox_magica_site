@@ -1,9 +1,9 @@
 const Counter = require('../models/counter');
 const APIFeatures = require('../utils/apiFeatures');
-const Request = require("request");
+const axios = require('axios');
 
-function validateCaptcha(req) {
-  //Запихать это все в отдельную функцию
+
+async function validateCaptcha(req) {
   let RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET;
 
   let recaptcha_url = "https://www.google.com/recaptcha/api/siteverify?";
@@ -11,16 +11,17 @@ function validateCaptcha(req) {
     recaptcha_url += "response=" + req.body["g-recaptcha-response"] + "&";
     recaptcha_url += "remoteip=" + req.connection.remoteAddress;
     console.log('recaptcha_url: ', recaptcha_url);
-    Request(recaptcha_url, function(error, resp, body) {
-        body = JSON.parse(body);
-        if (body.success !== undefined && !body.success) {
-            console.log('Captcha validation failed');
-            return false;
-        } else {
-          console.log('Captcha validation success');
-          return true;
-        }
-    });
+
+    let result = await (async () => {
+      try {
+        const response = await axios.get(recaptcha_url)
+        return response.data.success == true ? true : false;
+      } catch (error) {
+        console.log(error.response.body);
+      }
+    })();
+
+    return result;
 }
 
 exports.getCounters = async (req, res, next) => {
@@ -42,9 +43,9 @@ exports.incCounters = async (req, res, next) => {
   const features = new APIFeatures(Counter.findOne(), req.query);
   const counters = await features.query;
   */
- //console.log('req ', req);
-
- //if (validateCaptcha(req)) {
+ 
+  let isValid = await validateCaptcha(req)
+  if (isValid) {
   console.log('Captcha validation success');
   Count = await Counter.findOne().exec();
   console.log('srv-count', Count);
@@ -54,17 +55,6 @@ exports.incCounters = async (req, res, next) => {
   count = Number.parseInt(count);
   count += 1;
   console.log('srv-count2', count);
-  /*
-  Counter.findOneAndUpdate(
-    { _id: Count._id },
-    { $set: { count: count } },
-    { upsert: true },
-    function (err, doc) {
-      if (err) return res.send(500, { error: err });
-      return res.send('Succesfully saved.');
-    }
-  );
-  */
 
   try {
     await Counter.findOneAndUpdate(
@@ -77,7 +67,7 @@ exports.incCounters = async (req, res, next) => {
   }
 
   return res.send('Succesfully saved.');
-  /*} else {
+  } else {
     res.send(500, { "message": "Captcha validation failed" });
-  }*/
+  }
 };
