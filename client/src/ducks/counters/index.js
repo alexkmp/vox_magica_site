@@ -73,9 +73,10 @@ export function fetchCountersFailure(error) {
   };
 }
 
-export const addCount = function (data) {
+export const addCount = function (key) {
   return {
     type: ADD_COUNTERS_REQUEST,
+    data: key
   };
 };
 
@@ -111,8 +112,12 @@ export const addCountSaga = function* () {
   while (true) {
     const action = yield take(ADD_COUNTERS_REQUEST);
     console.log('5-1');
+    console.log('action ', action);
     try {
-      const response = yield axios.post(`api/book`, action.payload);
+      let params = {
+        'g-recaptcha-response': action.data
+      }
+      const response = yield axios.post(`api/book`, params);
       console.log('5-2', response);
       yield put({
         type: ADD_COUNTERS_SUCCESS,

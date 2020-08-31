@@ -2,7 +2,7 @@ const Counter = require('../models/counter');
 const APIFeatures = require('../utils/apiFeatures');
 const Request = require("request");
 
-async function validateCaptcha(req) {
+function validateCaptcha(req) {
   //Запихать это все в отдельную функцию
   let RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET;
 
@@ -42,10 +42,10 @@ exports.incCounters = async (req, res, next) => {
   const features = new APIFeatures(Counter.findOne(), req.query);
   const counters = await features.query;
   */
- isCaptchaValid = await validateCaptcha(req);
- console.log('isCaptchaValid ', isCaptchaValid);
+ //console.log('req ', req);
 
- if (isCaptchaValid == true) {
+ //if (validateCaptcha(req)) {
+  console.log('Captcha validation success');
   Count = await Counter.findOne().exec();
   console.log('srv-count', Count);
 
@@ -77,7 +77,7 @@ exports.incCounters = async (req, res, next) => {
   }
 
   return res.send('Succesfully saved.');
-  } else {
+  /*} else {
     res.send(500, { "message": "Captcha validation failed" });
-  }
+  }*/
 };
