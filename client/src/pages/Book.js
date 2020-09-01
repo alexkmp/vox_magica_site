@@ -17,7 +17,7 @@ class Book extends Component {
               <h4>Очень интересная книга</h4>
             </div>
             <div className="col-4">
-              <h4>Кол-во скачиваний</h4>
+              <h4>Количество скачиваний</h4>
               <CountersPage />
             </div>
           </div>

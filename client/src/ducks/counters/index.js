@@ -73,10 +73,13 @@ export function fetchCountersFailure(error) {
   };
 }
 
-export const addCount = function (key) {
+export const addCount = function (state) {
+  let {token} = state;
+  let {file_type} = state;
   return {
     type: ADD_COUNTERS_REQUEST,
-    data: key
+    token: token,
+    file_type: file_type
   };
 };
 
@@ -115,7 +118,8 @@ export const addCountSaga = function* () {
     console.log('action ', action);
     try {
       let params = {
-        'g-recaptcha-response': action.data
+        'g-recaptcha-response': action.token,
+        'file_type': action.file_type
       }
       const response = yield axios.post(`api/book`, params);
       console.log('5-2', response);

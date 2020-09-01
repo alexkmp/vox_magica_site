@@ -38,14 +38,13 @@ exports.getCounters = async (req, res, next) => {
 
 exports.incCounters = async (request, response, next) => {
   let Count,
-      isCaptchaValid; 
- 
+      isCaptchaValid;
+  let {file_type} = request.body;     
+  console.log(`file_type: ${file_type}`)
   isCaptchaValid = await validateCaptcha(request)
   if (isCaptchaValid) {
     console.log('Captcha validation success');
     Count = await Counter.findOne().exec();
-    console.log(`Count query: ${Count}`);
-
     let { count } = Count;
     console.log(`current count: ${count}`);
     count = Number.parseInt(count);

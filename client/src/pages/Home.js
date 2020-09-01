@@ -13,9 +13,11 @@ class Home extends Component {
     this.state = {
       initial: '',
       isCaptchaVerified: '',
-      key: ''
+      token: '',
+      file_type: ''
     };
     this.handleClick = this.handleClick.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -26,13 +28,19 @@ class Home extends Component {
     e.preventDefault();
 
     this.setState({
-      initial: true,
+      initial: true
     });
 
     if (this.state.isCaptchaVerified) {
       console.log('addCount');
-      this.props.addCount(this.state.key);
+      this.props.addCount(this.state);
     }
+  }
+
+  handleChange(event) {
+    this.setState({
+      file_type: event.target.value
+    });  
   }
 
   callback = () => {
@@ -44,11 +52,9 @@ class Home extends Component {
 
   verifyCallback = (response) => {
     console.log(response);
-    //неа, тут не конец проверки а только получение второго токена
-    console.log('verify!!!!');
     this.setState({
       isCaptchaVerified: true,
-      key: response
+      token: response
     });
   };
 
@@ -75,11 +81,20 @@ class Home extends Component {
 
         <form className="form-inline my-1 my-lg-0">
           <div className="form-group col-12">
+          <label>Выберите тип файла:
+            <select name="file_type" id="file_type" onChange={this.handleChange}>
+              <option value="fb2">fb2</option>
+              <option value="pdf">pdf</option>
+              <option value="epub">epub</option>
+              <option value="docx">docx</option>
+            </select>
+          </label> 
+          </div>
+          <div className="form-group col-12">
             <button
               className="btn  btn-info my-2 my-sm-0"
               type="button"
-              onClick={this.handleClick}
-            >
+              onClick={this.handleClick}>
               {' '}
               Скачать
             </button>
