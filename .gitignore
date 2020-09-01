@@ -1,7 +1,0 @@
-/client/node_modules
-/node_modules
-/client/yarn.lock
-yarn.lock
-package-lock.json
-config.env
-*.zip

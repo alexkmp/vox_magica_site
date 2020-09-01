@@ -1,5 +1,4 @@
 const express = require('express');
-const BodyParser = require("body-parser");
 
 const app = express();
 
@@ -7,9 +6,6 @@ const downRoutes = require('./routes/downRoutes');
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
-
-app.use(BodyParser.json());
-app.use(BodyParser.urlencoded({ extended: true }));
 
 app.use('/api', downRoutes);
 
