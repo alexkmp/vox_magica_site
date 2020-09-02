@@ -1,7 +1,19 @@
 const Counter = require('../models/counter');
 const APIFeatures = require('../features/apiFeatures');
 const axios = require('axios');
+const fs = require('fs')
 
+async function downdoad(response) {
+  let readStream, stat;
+  readStream = fs.createReadStream('/home/vox/Git/vox_magica_site/server/download/test.txt');
+  stat = fs.statSync('/home/vox/Git/vox_magica_site/server/download/test.txt');
+
+  response.writeHead(200, {
+    'Content-Type': 'text/html',
+    'Content-Length': stat.size
+  });
+  readStream.pipe(response);
+}
 
 async function validateCaptcha(request) {
   let RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET;
@@ -60,6 +72,7 @@ exports.incCounters = async (request, response, next) => {
     } catch (err) {
       response.send(500, { "message": "Something wrong happened!" });
     }
+    //downdoad(response);
     return response.send('Succesfully saved.');
   } else {
     response.send(500, { "message": "Captcha validation failed" });
